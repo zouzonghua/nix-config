@@ -9,17 +9,17 @@
 
   outputs = { self, nix-darwin, ... }:
     let
-      mac = nix-darwin.lib.darwinSystem {
+      mac = extraModules: nix-darwin.lib.darwinSystem {
         modules = [
           ./darwin/configuration.nix
           { system.configurationRevision = self.rev or self.dirtyRev or null; }
-        ];
+        ] ++ extraModules;
       };
     in
     {
       darwinConfigurations = {
-        work = mac;
-        personal = mac;
+        work = mac [ ];
+        personal = mac [ ./darwin/personal.nix ];
       };
     };
 }
